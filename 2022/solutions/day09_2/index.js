@@ -50,21 +50,6 @@ const moveTail = (headPos, tailPos) => {
     return [0, 0];
   }
   return [Math.round(xDist / (Math.abs(xDist) || 1)), Math.round(yDist / (Math.abs(yDist)||1))];
-  // if (Math.abs(xDist) > 1 && Math.abs(yDist) > 1) {
-  //   return [Math.round(xDist / Math.abs(xDist)), Math.round(yDist / Math.abs(yDist))];
-  // }
-  // if (Math.abs(xDist) == 1 && Math.abs(yDist) > 1) {
-  //   return [xDist, Math.round(yDist / Math.abs(yDist))];
-  // }
-  // if (Math.abs(xDist) > 1 && Math.abs(yDist) == 1) {
-  //   return [Math.round(xDist / Math.abs(xDist)), yDist];
-  // }
-  // if (xDist) {
-  //   return [Math.round(xDist / Math.abs(xDist)), 0];
-  // }
-  // if (yDist) {
-  //   return [0, Math.round(yDist / Math.abs(yDist))];
-  // }
 }
 
 export default solution;
