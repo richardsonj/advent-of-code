@@ -70,11 +70,4 @@ function manhattanDistance(pair) {
   return Math.abs(pair.beacon[0] - pair.sensor[0]) + Math.abs(pair.beacon[1] - pair.sensor[1]);
 }
 
-function normalizePair(pair, xMin, yMin) {
-  pair.sensor[0] -= xMin;
-  pair.sensor[1] -= yMin;
-  pair.beacon[0] -= xMin;
-  pair.beacon[1] -= yMin;
-}
-
 export default solution;
