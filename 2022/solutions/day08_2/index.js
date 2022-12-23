@@ -1,12 +1,9 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n").map(row => row.split("").map((val) => parseInt(val)));
-};
+const parseInput = (input) =>
+  input.split("\n").map((row) => row.split("").map((val) => parseInt(val)));
 
 const calculateSolution = (input) => {
   let maxScore = 0;
@@ -41,7 +38,7 @@ const calculateSolution = (input) => {
           break;
         }
       }
-      maxScore = Math.max(maxScore, xScore1 * xScore2 * yScore1 * yScore2)
+      maxScore = Math.max(maxScore, xScore1 * xScore2 * yScore1 * yScore2);
     }
   }
   return maxScore;

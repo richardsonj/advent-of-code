@@ -1,27 +1,23 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n\n").map((section) => section.split("\n"));
-};
+const parseInput = (input) => input.split("\n\n").map((section) => section.split("\n"));
 
 const calculateSolution = (input) => {
   const [grid, steps] = input;
   const stacks = parseStacks(grid);
-  const instructions = steps.map(row=> {
-    const splitRow = row.split(" ").map(val=>parseInt(val)-1);
-    return { count: splitRow[1], from: splitRow[3], to: splitRow[5]}
+  const instructions = steps.map((row) => {
+    const splitRow = row.split(" ").map((val) => parseInt(val) - 1);
+    return { count: splitRow[1], from: splitRow[3], to: splitRow[5] };
   });
-  for (let inst of instructions) {
+  for (const inst of instructions) {
     for (let i = 0; i <= inst.count; i++) {
       stacks[inst.to].push(stacks[inst.from].splice(-1, 1)[0]);
     }
   }
 
-  return stacks.map((row)=>row[row.length-1]).join("");
+  return stacks.map((row) => row[row.length - 1]).join("");
 };
 
 export default solution;
@@ -42,4 +38,3 @@ function parseStacks(grid) {
   }
   return stacks;
 }
-

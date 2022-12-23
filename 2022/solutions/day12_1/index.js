@@ -1,12 +1,9 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n").map(row => row.split("").map(val => val.charCodeAt(0)));
-};
+const parseInput = (input) =>
+  input.split("\n").map((row) => row.split("").map((val) => val.charCodeAt(0)));
 
 const calculateSolution = (input) => {
   const numV = input.flat().length;
@@ -18,19 +15,19 @@ const calculateSolution = (input) => {
   let start;
   for (let x = 0; x < numV; x++) {
     adjacency.push(new Array(numV).fill(0));
-    distance.push(Infinity)
+    distance.push(Infinity);
   }
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
       if (input[x][y] === 69) {
         target = nodeName(x, y, height);
         input[x][y] = "z".charCodeAt(0);
-      };
+      }
 
       if (input[x][y] === 83) {
         start = nodeName(x, y, height);
         input[x][y] = "a".charCodeAt(0);
-      };
+      }
     }
   }
   distance[start] = 0;
@@ -70,32 +67,30 @@ const findMin = (distance, spt) => {
     }
   }
   return minIndex;
-}
+};
 
 const visualizeDistance = (distance, width, height) => {
   for (let x = 0; x < width; x++) {
     const row = [];
     for (let y = 0; y < height; y++) {
-      row.push(distance[nodeName(x, y, height)].toString().padStart(3, " "))
+      row.push(distance[nodeName(x, y, height)].toString().padStart(3, " "));
     }
     console.log(row.join(" "));
   }
-}
+};
 
 const look = (src, adjacency, distance, spt) => {
   spt.add(src);
   for (let dest = 0; dest < adjacency.length; dest++) {
     if (adjacency[src][dest] === 1) {
       if (distance[dest] > distance[src] + 1) {
-        distance[dest] = distance[src] + 1
+        distance[dest] = distance[src] + 1;
       }
     }
   }
-}
+};
 
-const nodeName = (x, y, height) => {
-  return x * height + y;
-}
+const nodeName = (x, y, height) => x * height + y;
 
 const generateNeighbors = (x, y, width, height) => {
   const neighbors = [];
@@ -112,6 +107,6 @@ const generateNeighbors = (x, y, width, height) => {
     neighbors.push([x, y + 1]);
   }
   return neighbors;
-}
+};
 
 export default solution;

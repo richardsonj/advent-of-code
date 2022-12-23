@@ -106,15 +106,15 @@ let solutions = {
   day25_2,
 };
 
-let start = new Date();
-
-if (args[1] == "test") {
-  var file = `./solutions/${args[0]}/test-input.txt`;
+const start = new Date();
+let file;
+if (args[1] === "test") {
+  file = `./solutions/${args[0]}/test-input.txt`;
 } else {
-  var file = `./solutions/${args[0]}/input.txt`;
+  file = `./solutions/${args[0]}/input.txt`;
 }
 
-let sol = solutions[args[0]].solve(fileLoader.loadFile(file));
-let end = new Date();
+const sol = solutions[args[0]].solve(fileLoader.loadFile(file));
+const end = new Date();
 console.log(sol);
-console.log(`Time to Complete: ${(millisToHours(end-start))}`);
+console.log(`Time to Complete: ${millisToHours(end - start)}`);

@@ -1,16 +1,13 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n\n").map((pair) => pair.split("\n").map(set => JSON.parse(set)));
-};
+const parseInput = (input) =>
+  input.split("\n\n").map((pair) => pair.split("\n").map((set) => JSON.parse(set)));
 
 const calculateSolution = (input) => {
-  const result = input.map(pair => compare(pair[0], pair[1]));
-  return result.reduce((acc, curr, index) => acc + (curr ? (index + 1) : 0), 0);;
+  const result = input.map((pair) => compare(pair[0], pair[1]));
+  return result.reduce((acc, curr, index) => acc + (curr ? index + 1 : 0), 0);
 };
 
 const compare = (left, right) => {
@@ -42,9 +39,9 @@ const compare = (left, right) => {
     return undefined;
   }
   if (left === right) {
-     return undefined;
+    return undefined;
   }
   return left < right;
-}
+};
 
 export default solution;

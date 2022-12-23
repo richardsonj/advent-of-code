@@ -1,16 +1,13 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n\n").map((pair) => pair.split("\n").map(set => JSON.parse(set)));
-};
+const parseInput = (input) =>
+  input.split("\n\n").map((pair) => pair.split("\n").map((set) => JSON.parse(set)));
 
 const calculateSolution = (input) => {
   const divider1 = [[2]];
-  const divider2 = [[6]]
+  const divider2 = [[6]];
   input = input.flat();
   input.push(divider1);
   input.push(divider2);
@@ -50,6 +47,6 @@ const compare = (left, right) => {
     return 0;
   }
   return left < right ? -1 : 1;
-}
+};
 
 export default solution;

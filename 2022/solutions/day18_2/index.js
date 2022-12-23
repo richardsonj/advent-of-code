@@ -1,20 +1,20 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n").map((row) => row.split(",").map(val=>parseInt(val)));
-};
+const parseInput = (input) =>
+  input.split("\n").map((row) => row.split(",").map((val) => parseInt(val)));
 
 const calculateSolution = (input) => {
-  const { maxX, maxY, maxZ } = input.reduce((acc, curr) => {
-    acc.maxX = Math.max(acc.maxX, curr[0]);
-    acc.maxY = Math.max(acc.maxY, curr[1]);
-    acc.maxZ = Math.max(acc.maxZ, curr[2]);
-    return acc;
-  }, { maxX: 0, maxY: 0, maxZ: 0 });
+  const { maxX, maxY, maxZ } = input.reduce(
+    (acc, curr) => {
+      acc.maxX = Math.max(acc.maxX, curr[0]);
+      acc.maxY = Math.max(acc.maxY, curr[1]);
+      acc.maxZ = Math.max(acc.maxZ, curr[2]);
+      return acc;
+    },
+    { maxX: 0, maxY: 0, maxZ: 0 }
+  );
   const grid = [];
   for (let x = 0; x < maxX + 1; x++) {
     grid.push([]);
@@ -22,7 +22,7 @@ const calculateSolution = (input) => {
       grid[x].push(new Array(maxZ + 1).fill("."));
     }
   }
-  for (let point of input) {
+  for (const point of input) {
     grid[point[0]][point[1]][point[2]] = "#";
   }
 
@@ -39,10 +39,10 @@ const calculateSolution = (input) => {
   }
 
   let surfaceArea = 0;
-  for (let point of input) {
+  for (const point of input) {
     const neighbors = getNeighbors(grid, ...point);
 
-    for (let neighbor of neighbors) {
+    for (const neighbor of neighbors) {
       if (neighbor !== "#") {
         surfaceArea += 1;
       }
@@ -55,8 +55,8 @@ const getBoundRegion = (x, y, z, grid, visited) => {
   const neighborCoords = getNeighborCoordinates(x, y, z);
 
   const emptyNeighbors = [];
-  for (let neighborCoord of neighborCoords) {
-    const neighbor = grid[neighborCoord[0]]?.[neighborCoord[1]]?.[neighborCoord[2]]
+  for (const neighborCoord of neighborCoords) {
+    const neighbor = grid[neighborCoord[0]]?.[neighborCoord[1]]?.[neighborCoord[2]];
     if (neighbor === undefined) {
       return undefined;
     }
@@ -66,16 +66,22 @@ const getBoundRegion = (x, y, z, grid, visited) => {
     if (neighbor === ".") {
       visited.add(JSON.stringify(neighborCoord));
       emptyNeighbors.push(neighborCoord);
-      const rest = getBoundRegion(neighborCoord[0], neighborCoord[1], neighborCoord[2], grid, visited);
+      const rest = getBoundRegion(
+        neighborCoord[0],
+        neighborCoord[1],
+        neighborCoord[2],
+        grid,
+        visited
+      );
       if (rest) {
-        emptyNeighbors.push(...rest)
+        emptyNeighbors.push(...rest);
       } else {
         return undefined;
       }
     }
   }
   return [...emptyNeighbors, [x, y, z]];
-}
+};
 
 const getNeighbors = (grid, x, y, z) => {
   const neighbors = [];
@@ -86,7 +92,7 @@ const getNeighbors = (grid, x, y, z) => {
   neighbors.push(grid[x + 1]?.[y][z]);
   neighbors.push(grid[x - 1]?.[y][z]);
   return neighbors;
-}
+};
 
 const getNeighborCoordinates = (x, y, z) => {
   const neighbors = [];
@@ -97,8 +103,6 @@ const getNeighborCoordinates = (x, y, z) => {
   neighbors.push([x + 1, y, z]);
   neighbors.push([x - 1, y, z]);
   return neighbors;
-}
+};
 
 export default solution;
-
-

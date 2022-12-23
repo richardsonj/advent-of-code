@@ -1,24 +1,38 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n")
-    .map((row) => row.match(/Valve ([A-Z]{2}) has flow rate=([0-9]+); tunnel(?:s)? lead(?:s)? to valve(?:s)? ([A-Z]{2}(?:, [A-Z]{2})*)/))
-    .map((match) => ({ name: match[1], rate: parseInt(match[2]), neighbors: match[3].split(", ").sort() }))
-    .reduce((acc, { name, ...rest }) => { acc[name] = { ...rest }; return acc }, {});
-};
+const parseInput = (input) =>
+  input
+    .split("\n")
+    .map((row) =>
+      row.match(
+        /Valve ([A-Z]{2}) has flow rate=([0-9]+); tunnel(?:s)? lead(?:s)? to valve(?:s)? ([A-Z]{2}(?:, [A-Z]{2})*)/
+      )
+    )
+    .map((match) => ({
+      name: match[1],
+      rate: parseInt(match[2]),
+      neighbors: match[3].split(", ").sort(),
+    }))
+    .reduce((acc, { name, ...rest }) => {
+      acc[name] = { ...rest };
+      return acc;
+    }, {});
 
 const calculateSolution = (input) => {
-  const state = { pressureRelieved: 0, currentRoom: "AA", rooms: {}, minutesRemaining: 30 };
+  const state = {
+    pressureRelieved: 0,
+    currentRoom: "AA",
+    rooms: {},
+    minutesRemaining: 30,
+  };
   for (const room in input) {
     state.rooms[room] = { on: false, score: 0, name: room };
     input[room].shortestPaths = {};
     for (const destRoom in input) {
       if (room === destRoom) continue;
-      input[room].shortestPaths[destRoom] = shortestPath(input, room, destRoom, {}, [])
+      input[room].shortestPaths[destRoom] = shortestPath(input, room, destRoom, {}, []);
     }
   }
   return makeMove(input, state);
@@ -39,39 +53,41 @@ const shortestPath = (input, start, end, memo, path) => {
     if (minDist === Infinity) {
       path.pop();
       return Infinity;
-    };
+    }
     memo[`${start}-${end}`] = minDist;
     path.pop();
   }
   return memo[`${start}-${end}`];
-}
+};
 
 const makeMove = (roomData, state) => {
-  for (let room of Object.values(state.rooms)) {
-    room.score = calculateScoreGain(roomData, state, room)
+  for (const room of Object.values(state.rooms)) {
+    room.score = calculateScoreGain(roomData, state, room);
   }
   const rooms = Object.values(state.rooms).sort((a, b) => b.score - a.score);
 
   let maxScore = state.pressureRelieved;
 
-  for (let room of rooms) {
+  for (const room of rooms) {
     if (room.score === 0) {
       continue;
     }
     const nextState = {
       ...state,
       rooms: {
-        ...Object.keys(state.rooms)
-          .reduce((rooms, roomId) => {
-            rooms[roomId] = {
-              ...state.rooms[roomId]
-            };
-            return rooms;
-          }, {})
-      }
-    }
-    const timePassing = Math.min(roomData[state.currentRoom].shortestPaths[room.name] + 1, state.minutesRemaining);
-    nextState.pressureRelieved += room.score
+        ...Object.keys(state.rooms).reduce((rooms, roomId) => {
+          rooms[roomId] = {
+            ...state.rooms[roomId],
+          };
+          return rooms;
+        }, {}),
+      },
+    };
+    const timePassing = Math.min(
+      roomData[state.currentRoom].shortestPaths[room.name] + 1,
+      state.minutesRemaining
+    );
+    nextState.pressureRelieved += room.score;
     nextState.minutesRemaining -= timePassing;
     nextState.currentRoom = room.name;
     nextState.rooms[room.name].on = true;
@@ -82,13 +98,16 @@ const makeMove = (roomData, state) => {
     }
   }
   return maxScore;
-}
+};
 
 const calculateScoreGain = (roomData, state, room) => {
   if (room.on || roomData[room.name].rate === 0) {
     return 0;
   }
-  return (state.minutesRemaining - roomData[state.currentRoom].shortestPaths[room.name] - 1) * roomData[room.name].rate;
-}
+  return (
+    (state.minutesRemaining - roomData[state.currentRoom].shortestPaths[room.name] - 1) *
+    roomData[room.name].rate
+  );
+};
 
 export default solution;

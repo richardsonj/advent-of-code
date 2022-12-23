@@ -1,14 +1,15 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n").map((row) => row.split(" "));
-};
+const parseInput = (input) => input.split("\n").map((row) => row.split(" "));
 
-const possibleMoves = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }
+const possibleMoves = {
+  U: [0, -1],
+  D: [0, 1],
+  L: [-1, 0],
+  R: [1, 0],
+};
 
 const calculateSolution = (input) => {
   const headPos = [500, 500];
@@ -32,19 +33,22 @@ const calculateSolution = (input) => {
       grid[tailPos[0]][tailPos[1]] = true;
     }
   }
-  return grid.flat().reduce((acc, curr) => { acc += curr ? 1 : 0; return acc; }, 0);
+  return grid.flat().reduce((acc, curr) => {
+    acc += curr ? 1 : 0;
+    return acc;
+  }, 0);
 };
 
 const moveTail = (headPos, tailPos) => {
   const xDist = headPos[0] - tailPos[0];
   const yDist = headPos[1] - tailPos[1];
-  if ((xDist * xDist + yDist * yDist) <= 2) {
+  if (xDist * xDist + yDist * yDist <= 2) {
     return [0, 0];
   }
-  if (Math.abs(xDist) == 1 && Math.abs(yDist) > 1) {
+  if (Math.abs(xDist) === 1 && Math.abs(yDist) > 1) {
     return [xDist, Math.round(yDist / Math.abs(yDist))];
   }
-  if (Math.abs(xDist) > 1 && Math.abs(yDist) == 1) {
+  if (Math.abs(xDist) > 1 && Math.abs(yDist) === 1) {
     return [Math.round(xDist / Math.abs(xDist)), yDist];
   }
   if (xDist) {
@@ -53,6 +57,6 @@ const moveTail = (headPos, tailPos) => {
   if (yDist) {
     return [0, Math.round(yDist / Math.abs(yDist))];
   }
-}
+};
 
 export default solution;

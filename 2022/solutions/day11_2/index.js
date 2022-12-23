@@ -1,12 +1,8 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n\n").map((monkey) => parseMonkey(monkey));
-};
+const parseInput = (input) => input.split("\n\n").map((monkey) => parseMonkey(monkey));
 
 const parseMonkey = (input) => {
   const lines = input.split("\n");
@@ -17,13 +13,16 @@ const parseMonkey = (input) => {
   const falseVal = parseInt(lines[5].split(" ").slice(-1)[0]);
   return {
     id: parseInt(lines[0][7]),
-    items: lines[1].split(": ")[1].split(",").map(item => parseInt(item)),
+    items: lines[1]
+      .split(": ")[1]
+      .split(",")
+      .map((item) => parseInt(item)),
     modVal,
     operation: (old, modVal) => operation(old, op, operand, modVal),
-    test: (value) => value % modVal === 0 ? trueVal : falseVal,
-    inspections: 0
+    test: (value) => (value % modVal === 0 ? trueVal : falseVal),
+    inspections: 0,
   };
-}
+};
 
 const operation = (val, op, operand, modVal) => {
   const opValue = parseInt(operand);
@@ -34,16 +33,19 @@ const operation = (val, op, operand, modVal) => {
     case "*":
       return (val * (opValue || val)) % modVal;
   }
-}
+};
 
 const calculateSolution = (input) => {
-  const modVal = input.map(monkey => monkey.modVal).reduce((acc, curr) => acc * curr, 1);
-  const monkeyMap = input.reduce((acc, curr) => { acc[curr.id] = curr; return acc; }, {});
+  const modVal = input.map((monkey) => monkey.modVal).reduce((acc, curr) => acc * curr, 1);
+  const monkeyMap = input.reduce((acc, curr) => {
+    acc[curr.id] = curr;
+    return acc;
+  }, {});
   for (let round = 1; round <= 10000; round++) {
-    for (let monkey of input) {
+    for (const monkey of input) {
       monkey.inspections += monkey.items.length;
-      for (let item of monkey.items) {
-        const highWorry = monkey.operation(item, modVal)
+      for (const item of monkey.items) {
+        const highWorry = monkey.operation(item, modVal);
         // const newVal = Math.floor(highWorry/3);
         const target = monkey.test(highWorry);
         monkeyMap[target].items.push(highWorry);
@@ -52,7 +54,7 @@ const calculateSolution = (input) => {
     }
   }
 
-  const inspections = input.map(monkey => monkey.inspections);
+  const inspections = input.map((monkey) => monkey.inspections);
   inspections.sort((a, b) => a - b);
   return inspections.splice(-2).reduce((acc, curr) => acc * curr, 1);
 };

@@ -1,15 +1,11 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n");
-};
+const parseInput = (input) => input.split("\n");
 
 const calculateSolution = (input) => {
-  const root = { files: {}, folders: {}, parent: undefined }
+  const root = { files: {}, folders: {}, parent: undefined };
   let currentDirectory = root;
   for (const line of input) {
     const args = line.split(" ");
@@ -34,22 +30,24 @@ const calculateSolution = (input) => {
 
   const results = [];
   const rootSize = getDirectorySize(root, results);
-  const availableSpace = 70000000-rootSize;
-  const spaceNeeded = 30000000-availableSpace;
+  const availableSpace = 70000000 - rootSize;
+  const spaceNeeded = 30000000 - availableSpace;
   results.sort();
-  for (let size of results) {
+  for (const size of results) {
     if (size > spaceNeeded) {
-       return size;
+      return size;
     }
   }
 };
 
 const getDirectorySize = (dir, results) => {
   const filesTotal = Object.values(dir.files).reduce((a, b) => a + b, 0);
-  const foldersTotal = Object.values(dir.folders).map((folder) => getDirectorySize(folder, results)).reduce((a, b) => a + b, 0);
+  const foldersTotal = Object.values(dir.folders)
+    .map((folder) => getDirectorySize(folder, results))
+    .reduce((a, b) => a + b, 0);
   const size = filesTotal + foldersTotal;
   results.push(size);
   return size;
-}
+};
 
 export default solution;

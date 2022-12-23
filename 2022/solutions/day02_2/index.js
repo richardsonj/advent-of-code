@@ -1,12 +1,8 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n").map((row) => row.split(" "));
-};
+const parseInput = (input) => input.split("\n").map((row) => row.split(" "));
 
 const calculateSolution = (input) => {
   const choiceScores = { A: 1, B: 2, C: 3 };
@@ -17,7 +13,7 @@ const calculateSolution = (input) => {
   };
   const winScores = { X: 0, Y: 3, Z: 6 };
   let totalScore = 0;
-  for (let round of input) {
+  for (const round of input) {
     const theirs = round[0];
     const mine = round[1];
     const choiceScore = choiceScores[choices[theirs][mine]];

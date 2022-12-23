@@ -1,12 +1,8 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("\n\n").map((section) => section.split("\n"));
-};
+const parseInput = (input) => input.split("\n\n").map((section) => section.split("\n"));
 
 const calculateSolution = (input) => {
   const [grid, steps] = input;
@@ -15,7 +11,7 @@ const calculateSolution = (input) => {
     const splitRow = row.split(" ").map((val) => parseInt(val) - 1);
     return { count: splitRow[1], from: splitRow[3], to: splitRow[5] };
   });
-  for (let inst of instructions) {
+  for (const inst of instructions) {
     const count = inst.count + 1;
     stacks[inst.to].push(...stacks[inst.from].splice(-count, count));
   }

@@ -1,25 +1,32 @@
 const solution = {
-  solve: (input) => {
-    return calculateSolution(parseInput(input));
-  },
+  solve: (input) => calculateSolution(parseInput(input)),
 };
 
-const parseInput = (input) => {
-  return input.split("");
-};
+const parseInput = (input) => input.split("");
 
 const calculateSolution = (wind) => {
   const grid = [];
   for (let x = 0; x < 7; x++) {
-    grid.push(new Array(7).fill("."))
+    grid.push(new Array(7).fill("."));
   }
   const shapes = [
     [["#"], ["#"], ["#"], ["#"]],
-    [[".", "#", "."], ["#", "#", "#"], [".", "#", "."]],
-    [["#", ".", "."], ["#", ".", "."], ["#", "#", "#"]],
+    [
+      [".", "#", "."],
+      ["#", "#", "#"],
+      [".", "#", "."],
+    ],
+    [
+      ["#", ".", "."],
+      ["#", ".", "."],
+      ["#", "#", "#"],
+    ],
     [["#", "#", "#", "#"]],
-    [["#", "#"], ["#", "#"]]
-  ]
+    [
+      ["#", "#"],
+      ["#", "#"],
+    ],
+  ];
   let shapeIndex = 0;
   let windIndex = 0;
   let currentTop = 0;
@@ -32,8 +39,8 @@ const calculateSolution = (wind) => {
       }
     }
     let shapeOffset = [2, currentTop + 3];
-    const shape = shapes[shapeIndex]
-    
+    const shape = shapes[shapeIndex];
+
     shapeIndex++;
     shapeIndex %= shapes.length;
     while (true) {
@@ -49,9 +56,9 @@ const calculateSolution = (wind) => {
         shapeOffset = offsetAfterFall;
       } else {
         drawShape(grid, shape, shapeOffset);
-        currentTop = Math.max(currentTop, shapeOffset[1] + shape[0].length)
+        currentTop = Math.max(currentTop, shapeOffset[1] + shape[0].length);
         break;
-      }      
+      }
     }
   }
   return currentTop;
@@ -60,7 +67,7 @@ const calculateSolution = (wind) => {
 const isValid = (grid, shape, offset) => {
   for (let x = 0; x < shape.length; x++) {
     for (let y = 0; y < shape[0].length; y++) {
-      if (shape[x][y]===".") {
+      if (shape[x][y] === ".") {
         continue;
       }
       const gridX = offset[0] + x;
@@ -74,12 +81,12 @@ const isValid = (grid, shape, offset) => {
     }
   }
   return true;
-}
+};
 
 const drawShape = (grid, shape, offset) => {
   for (let x = 0; x < shape.length; x++) {
     for (let y = 0; y < shape[0].length; y++) {
-      if (shape[x][y]===".") {
+      if (shape[x][y] === ".") {
         continue;
       }
       const gridX = offset[0] + x;
@@ -87,6 +94,6 @@ const drawShape = (grid, shape, offset) => {
       grid[gridX][gridY] = "#";
     }
   }
-}
+};
 
 export default solution;
