@@ -38,12 +38,15 @@ const runSimulation = (blueprint) => {
     geodeCount: 0,
     blueprint,
     maxScore: 0,
-    // maxClayRobots: Math.floor((24 - 2 - blueprint.geodeRobotCost[1]) / blueprint.clayRobotCost),
-    // maxOreRobots:
-    //   Math.floor(
-    //     (24 - 3 - blueprint.geodeRobotCost[1] - blueprint.obsidianRobotCost[1]) /
-    //       blueprint.oreRobotCost
-    //   ) + 1,
+    maxClayRobots: blueprint.obsidianRobotCost[1],
+    maxOreRobots: Math.max(
+      blueprint.geodeRobotCost[0],
+      blueprint.obsidianRobotCost[0],
+      blueprint.oreRobotCost,
+      blueprint.clayRobotCost
+    ),
+    maxObsidianRobots: blueprint.geodeRobotCost[1],
+    doNotBuy: [],
   };
 
   return stepSimulation(simulationState);
@@ -59,21 +62,20 @@ const stepSimulation = (state, choices = []) => {
     }
     return [state.geodeCount, choices];
   }
-  // const minOreCost = Math.min(state.blueprint.oreRobotCost,
-  //   state.blueprint.clayRobotCost,
-  //   state.blueprint.obsidianRobotCost[0],
-  //   state.blueprint.geodeRobotCost[0]);
-  // while (minOreCost > state.oreCount && state.minute <= 23) {
-  //   incrementTime(state);
-  // }
 
   const canBuyOreRobot =
-    state.oreCount >= state.blueprint.oreRobotCost && state.oreRobotCount < state.maxOreRobots;
+    state.oreCount >= state.blueprint.oreRobotCost &&
+    state.oreRobotCount < state.maxOreRobots &&
+    !state.doNotBuy.has("ore");
   const canBuyClayRobot =
-    state.oreCount >= state.blueprint.clayRobotCost && state.clayRobotCount < state.maxClayRobots;
+    state.oreCount >= state.blueprint.clayRobotCost &&
+    state.clayRobotCount < state.maxClayRobots &&
+    !state.doNotBuy.has("clay");
   const canBuyObsidianRobot =
     state.oreCount >= state.blueprint.obsidianRobotCost[0] &&
-    state.clayCount >= state.blueprint.obsidianRobotCost[1];
+    state.clayCount >= state.blueprint.obsidianRobotCost[1] &&
+    state.obsidianRobotCount < state.maxObsidianRobots &&
+    !state.doNotBuy.has("obsidian");
   const canBuyGeodeRobot =
     state.oreCount >= state.blueprint.geodeRobotCost[0] &&
     state.obsidianCount >= state.blueprint.geodeRobotCost[1];
@@ -108,8 +110,12 @@ const stepSimulation = (state, choices = []) => {
 };
 
 const unwinnableState = (state) => {
-  const geodeCutoff = 24 - state.maxScore;
-  const obsidianCutoff = geodeCutoff - 1;
+  let { geodeCount, geodeRobotCount } = state;
+  for (let x = state.minute; x <= 24; x++) {
+    geodeCount += geodeRobotCount;
+    geodeRobotCount++;
+  }
+  return geodeCount < state.maxScore;
 };
 
 const generateNextState = (option, state) => {
@@ -119,21 +125,39 @@ const generateNextState = (option, state) => {
     case "buyOreRobot":
       nextState.oreRobotCount++;
       nextState.oreCount -= nextState.blueprint.oreRobotCost;
+      nextState.doNotBuy = new Set();
       break;
     case "buyClayRobot":
       nextState.clayRobotCount++;
       nextState.oreCount -= nextState.blueprint.clayRobotCost;
+      nextState.doNotBuy = new Set();
       break;
     case "buyObsidianRobot":
       nextState.obsidianRobotCount++;
       nextState.oreCount -= nextState.blueprint.obsidianRobotCost[0];
       nextState.clayCount -= nextState.blueprint.obsidianRobotCost[1];
+      nextState.doNotBuy = new Set();
       break;
     case "buyGeodeRobot":
       nextState.geodeRobotCount++;
       nextState.oreCount -= nextState.blueprint.geodeRobotCost[0];
       nextState.obsidianCount -= nextState.blueprint.geodeRobotCost[1];
+      nextState.doNotBuy = new Set();
       break;
+    default:
+      nextState.doNotBuy = new Set(state.doNotBuy);
+      if (state.oreCount >= state.blueprint.oreRobotCost) {
+        nextState.doNotBuy.add("ore");
+      }
+      if (state.oreCount >= state.blueprint.clayRobotCost) {
+        nextState.doNotBuy.add("clay");
+      }
+      if (
+        state.oreCount >= state.blueprint.obsidianRobotCost[0] &&
+        state.clayCount >= state.blueprint.obsidianRobotCost[1]
+      ) {
+        nextState.doNotBuy.add("obsidian");
+      }
   }
   return nextState;
 };
