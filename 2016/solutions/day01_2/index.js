@@ -12,8 +12,8 @@ const calculateSolution = (input) => {
   let x = 0;
   let y = 0;
   let direction = 0;
-  let visited = [`${x}:${y}`];
-  for (let dir of input) {
+  const visited = [`${x}:${y}`];
+  for (const dir of input) {
     if (dir.substring(0, 1) === "L") {
       direction--;
     } else {
@@ -21,7 +21,7 @@ const calculateSolution = (input) => {
     }
     direction += 4;
     direction %= 4;
-    let distance = parseInt(dir.substring(1));
+    const distance = parseInt(dir.substring(1));
     for (let i = 0; i < distance; i++) {
       switch (direction) {
         case 0:
@@ -39,9 +39,8 @@ const calculateSolution = (input) => {
       }
       if (visited.includes(`${x}:${y}`)) {
         return Math.abs(x) + Math.abs(y);
-      } else {
-        visited.push(`${x}:${y}`);
       }
+      visited.push(`${x}:${y}`);
     }
   }
 

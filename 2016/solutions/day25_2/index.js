@@ -8,7 +8,6 @@ const parseInput = (input) => {
   return input.split("");
 };
 
-const calculateSolution = (input) => {
-};
+const calculateSolution = (input) => {};
 
 export default solution;

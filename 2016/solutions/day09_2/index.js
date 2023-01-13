@@ -22,13 +22,12 @@ const decompress = (input) => {
         marker += input[x];
       }
 
-      let match = marker.match(/\((\d*)x(\d*)\)/);
+      const match = marker.match(/\((\d*)x(\d*)\)/);
       if (!match) {
         continue;
       }
       const [, segLength, repeats] = match;
-      length +=
-        decompress(input.substring(x, x + parseInt(segLength))) * (parseInt(repeats));
+      length += decompress(input.substring(x, x + parseInt(segLength))) * parseInt(repeats);
       x += parseInt(segLength) - 1;
     } else {
       length += 1;

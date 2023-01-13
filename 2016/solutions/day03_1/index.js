@@ -15,9 +15,9 @@ const parseInput = (input) => {
 
 const calculateSolution = (input) => {
   let count = 0;
-  for (let row of input) {
-    row.sort((a,b)=>a-b);
-    if (row[0] + row[1] > row[2]){
+  for (const row of input) {
+    row.sort((a, b) => a - b);
+    if (row[0] + row[1] > row[2]) {
       count++;
     }
   }

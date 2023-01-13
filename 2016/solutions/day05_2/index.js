@@ -12,12 +12,8 @@ const parseInput = (input) => {
 
 const calculateSolution = (input) => {
   let password = "        ";
-  for (
-    let x = 0;
-    password.split("").filter((val) => val === " ").length > 0;
-    x++
-  ) {
-    let hash = md5(`${input}${x}`);
+  for (let x = 0; password.split("").filter((val) => val === " ").length > 0; x++) {
+    const hash = md5(`${input}${x}`);
     if (hash.startsWith("00000")) {
       if (hash[5] >= 0 && hash[5] < 8 && password[hash[5]] === " ") {
         password =

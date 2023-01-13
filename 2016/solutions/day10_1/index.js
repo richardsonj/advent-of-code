@@ -16,9 +16,7 @@ const parseInput = (input) => {
       acc[botKey].val.sort((a, b) => a - b);
       return acc;
     }
-    match = val.match(
-      /bot (\d*) gives low to (\w*) (\d*) and high to (\w*) (\d*)/
-    );
+    match = val.match(/bot (\d*) gives low to (\w*) (\d*) and high to (\w*) (\d*)/);
     if (match) {
       const botKey = `B${match[1]}`;
       if (!acc[botKey]) {
@@ -34,7 +32,7 @@ const parseInput = (input) => {
 
 const calculateSolution = (input) => {
   while (true) {
-    for (let key in input) {
+    for (const key in input) {
       if (input[key].val.length === 2) {
         if (input[key].val[0] === 17 && input[key].val[1] === 61) {
           return key;

@@ -1,3 +1,5 @@
+import Queue from "../../Queue.js";
+
 const solution = {
   solve: (input) => {
     return calculateSolution(parseInput(input));
@@ -7,8 +9,8 @@ const solution = {
 const parseInput = (input) => {
   return input.split("\r\n").reduce(
     (acc, curr) => {
-      let match = curr.match(
-        /The (\w*) floor contains (?:a (\w+)(?:-compatible)? (\w+)|nothing relevant)(?:(?:, | )+(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?\./
+      const match = curr.match(
+        /The (\w*) floor contains (?:a (\w+)(?:-compatible)? (\w+)|nothing relevant)(?:(?:, | )+(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?(?:(?:, )?(?:and )?(?:a (\w+)(?:-compatible)? (\w+)))?\./
       );
       if (match && match.length > 2) {
         for (let x = 2; x < match.length; x += 2) {
@@ -28,41 +30,34 @@ const parseInput = (input) => {
 };
 
 const calculateSolution = (input) => {
-  return makeMove(input, "first", [], {});
+  const seen = new Set();
+  const possibleMoves = new Queue();
+  possibleMoves.add(
+    ...findPossibleMoves(
+      { floors: input, elevatorFloor: "first", moveCount: 0, history: [stringify(input, "first")] },
+      seen
+    )
+  );
+  let maxMoveCount = 0;
+  while (possibleMoves.length > 0) {
+    const move = possibleMoves.remove();
+    if (move.moveCount > maxMoveCount) {
+      maxMoveCount = move.moveCount;
+      console.log(`Checking move # ${maxMoveCount}`);
+      console.log(`${possibleMoves.length + 1} possible moves`);
+    }
+    const nextPossibleMoves = findPossibleMoves(move, seen);
+    for (const possibleMove of nextPossibleMoves) {
+      if (winState(possibleMove.floors)) {
+        return possibleMove.moveCount;
+      }
+    }
+    possibleMoves.add(...nextPossibleMoves);
+  }
+  return undefined;
 };
 
-const makeMove = (
-  floors,
-  elevatorFloor,
-  history,
-  memo = {}
-  //best = [Infinity]
-) => {
-  // if (history.length >= best[0]) {
-  //   return Infinity;
-  // }
-
-  let stateKey = stringify(floors, elevatorFloor);
-  if (invalidGameState(floors)) {
-    return Infinity;
-  }
-  if (history.includes(stateKey + "*")) {
-    return undefined;
-  }
-  if (history.includes(stateKey)) {
-    stateKey += "*";
-  }
-  if (memo[stateKey] !== undefined) {
-    //best[0] = Math.min(memo[stateKey] + history.length, best[0])
-    return memo[stateKey] + history.length;
-  }
-  let minMoves = Infinity;
-
-  if (winState(floors)) {
-    //best[0] = Math.min(history.length, best[0]);
-    memo[stateKey] = 0;
-    return history.length;
-  }
+const findPossibleMoves = ({ floors, elevatorFloor, moveCount, history }, seen) => {
   let potentialFloors;
   switch (elevatorFloor) {
     case "first":
@@ -79,62 +74,50 @@ const makeMove = (
       break;
   }
 
-  for (let destinationFloor of potentialFloors) {
-    for (let item1 of floors[elevatorFloor]) {
-      for (let item2 of [undefined, ...floors[elevatorFloor]]) {
-        if (item1 === item2) continue;
-        let nextFloors = copyFloors(floors);
+  const validMoves = [];
+  for (const destinationFloor of potentialFloors) {
+    for (let item1Index = 0; item1Index < floors[elevatorFloor].length; item1Index++) {
+      const item1 = floors[elevatorFloor][item1Index];
+      for (let item2Index = item1Index; item2Index < floors[elevatorFloor].length; item2Index++) {
+        const item2 = item1Index === item2Index ? undefined : floors[elevatorFloor][item2Index];
+        const nextFloors = copyFloors(floors);
         nextFloors[destinationFloor].push(item1);
-        nextFloors[elevatorFloor].splice(
-          nextFloors[elevatorFloor].indexOf(item1),
-          1
-        );
+        nextFloors[elevatorFloor].splice(nextFloors[elevatorFloor].indexOf(item1), 1);
         if (item2) {
           nextFloors[destinationFloor].push(item2);
-          nextFloors[elevatorFloor].splice(
-            nextFloors[elevatorFloor].indexOf(item2),
-            1
-          );
+          nextFloors[elevatorFloor].splice(nextFloors[elevatorFloor].indexOf(item2), 1);
         }
-        let nextMinMoves = makeMove(
-          nextFloors,
-          destinationFloor,
-          [...history, stateKey],
-          memo
-        );
-        if (nextMinMoves) {
-          minMoves = Math.min(minMoves, nextMinMoves);
+        const stateKey = stringify(nextFloors, destinationFloor);
+        if (!invalidGameState(nextFloors) && !seen.has(stateKey)) {
+          validMoves.push({
+            floors: nextFloors,
+            elevatorFloor: destinationFloor,
+            moveCount: moveCount + 1,
+            history: [...history, stateKey],
+          });
+          seen.add(stateKey);
         }
       }
     }
   }
-  if (memo[stateKey]) {
-    memo[stateKey] = Math.min(memo[stateKey], minMoves - history.length);
-  } else {
-    memo[stateKey] = minMoves - history.length;
-  }
-  return minMoves;
+  return validMoves;
 };
 
 const copyFloors = (floors) => {
-  let newFloors = {};
-  for (let floor in floors) {
+  const newFloors = {};
+  for (const floor of Object.keys(floors)) {
     newFloors[floor] = [...floors[floor]];
   }
   return newFloors;
 };
 
 const invalidGameState = (floors) => {
-  for (let floor of Object.values(floors)) {
-    for (let item of floor) {
+  for (const floor of Object.values(floors)) {
+    for (const item of floor) {
       if (item.type === "microchip") {
         if (
-          floor.filter(
-            (val) => val.chem === item.chem && val.type === "generator"
-          ).length === 0 &&
-          floor.filter(
-            (val) => val.chem !== item.chem && val.type === "generator"
-          ).length > 0
+          !floor.some((val) => val.chem === item.chem && val.type === "generator") &&
+          floor.some((val) => val.chem !== item.chem && val.type === "generator")
         ) {
           return true;
         }
@@ -145,17 +128,13 @@ const invalidGameState = (floors) => {
 };
 
 const winState = (floors) => {
-  return (
-    floors.first.length === 0 &&
-    floors.second.length === 0 &&
-    floors.third.length === 0
-  );
+  return floors.first.length === 0 && floors.second.length === 0 && floors.third.length === 0;
 };
 
 const stringify = (floors, elevatorFloor) => {
   let result = "";
-  for (let floor in floors) {
-    let floorValues = floors[floor].map((val) => `${val.chem}:${val.type}`);
+  for (const floor of Object.keys(floors)) {
+    const floorValues = floors[floor].map((val) => `${val.chem}:${val.type}`);
     floorValues.sort((val1, val2) => val1.localeCompare(val2));
     result += `${floor}:${floorValues.join(",")}`;
   }

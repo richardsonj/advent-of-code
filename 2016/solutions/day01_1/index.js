@@ -12,7 +12,7 @@ const calculateSolution = (input) => {
   let x = 0;
   let y = 0;
   let direction = 0;
-  for (let dir of input) {
+  for (const dir of input) {
     if (dir.substring(0, 1) === "L") {
       direction--;
     } else {
@@ -20,7 +20,7 @@ const calculateSolution = (input) => {
     }
     direction += 4;
     direction %= 4;
-    let distance = parseInt(dir.substring(1));
+    const distance = parseInt(dir.substring(1));
     switch (direction) {
       case 0:
         y -= distance;

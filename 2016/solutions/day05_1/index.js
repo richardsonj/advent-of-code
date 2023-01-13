@@ -1,4 +1,4 @@
-import md5 from 'md5';
+import md5 from "md5";
 
 const solution = {
   solve: (input) => {
@@ -11,9 +11,9 @@ const parseInput = (input) => {
 };
 
 const calculateSolution = (input) => {
-  let password = ""
+  let password = "";
   for (let x = 0; password.length < 8; x++) {
-    let hash = md5(`${input}${x}`);
+    const hash = md5(`${input}${x}`);
     if (hash.startsWith("00000")) {
       password += hash[5];
     }

@@ -9,18 +9,18 @@ const parseInput = (input) => {
 };
 
 const calculateSolution = (input) => {
-  let chars = [];
+  const chars = [];
   for (let x = 0; x < input[0].length; x++) {
     chars.push({});
   }
-  for (let word of input) {
+  for (const word of input) {
     for (let x = 0; x < word.length; x++) {
       chars[x][word[x]] ? chars[x][word[x]]++ : (chars[x][word[x]] = 1);
     }
   }
   let answer = "";
-  for (let charSet of chars) {
-    let candidates = Object.keys(charSet);
+  for (const charSet of chars) {
+    const candidates = Object.keys(charSet);
     candidates.sort((left, right) => charSet[right] - charSet[left]);
     answer += candidates[0];
   }

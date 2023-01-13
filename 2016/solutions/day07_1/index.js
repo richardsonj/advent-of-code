@@ -10,7 +10,7 @@ const parseInput = (input) => {
 
 const calculateSolution = (input) => {
   let count = 0;
-  for (let ip of input) {
+  for (const ip of input) {
     let inBraces = false;
     let isTLS = false;
     for (let x = 0; x < ip.length; x++) {

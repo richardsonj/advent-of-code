@@ -9,17 +9,17 @@ const parseInput = (input) => {
 };
 
 const calculateSolution = (input) => {
-  let keypad = [
+  const keypad = [
     ["1", "2", "3"],
     ["4", "5", "6"],
     ["7", "8", "9"],
   ];
-  let pos = [1, 1];
+  const pos = [1, 1];
 
-let code = ""
+  let code = "";
 
-  for (let inst of input) {
-    for (let dir of inst) {
+  for (const inst of input) {
+    for (const dir of inst) {
       switch (dir) {
         case "U":
           pos[0] > 0 ? pos[0]-- : undefined;

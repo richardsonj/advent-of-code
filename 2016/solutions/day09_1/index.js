@@ -13,7 +13,7 @@ const calculateSolution = (input) => {
 };
 
 const decompress = (input) => {
-  let length = input.length;
+  let { length } = input;
   for (let x = 0; x < input.length; x++) {
     if (input[x] === "(") {
       let marker = "(";
@@ -22,7 +22,7 @@ const decompress = (input) => {
         marker += input[x];
       }
 
-      let match = marker.match(/\((\d*)x(\d*)\)/);
+      const match = marker.match(/\((\d*)x(\d*)\)/);
       if (!match) {
         continue;
       }
