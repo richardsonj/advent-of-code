@@ -9,12 +9,12 @@ class Computer {
   }
 
   process = (code) => {
-    for (let x = 0; x < code.length;) {
-        const [opCode, ...params] = this.instructionParser(code[x]);
-        x+= this.instructionSet[opCode](this.registers, params);
+    for (let x = 0; x < code.length; ) {
+      const [opCode, ...params] = this.instructionParser(code[x]);
+      x += this.instructionSet[opCode](this.registers, params, code, x);
     }
     return this.registers;
-  }
+  };
 }
 
 export default Computer;

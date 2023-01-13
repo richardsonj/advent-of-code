@@ -1,4 +1,4 @@
-import { fileLoader } from "./fileloader.js";
+import { fileLoader } from "./fileLoader.js";
 import { millisToHours } from "./DateUtil.js";
 import day01_1 from "./solutions/day01_1/index.js";
 import day01_2 from "./solutions/day01_2/index.js";
