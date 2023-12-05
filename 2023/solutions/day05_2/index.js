@@ -31,39 +31,26 @@ const calculateSolution = (input) => {
   for (const seedRange of input.seeds) {
     console.log(`Starting seed range: ${JSON.stringify(seedRange)}`);
     for (let x = seedRange.start; x < seedRange.start + seedRange.length; x++) {
-      let intermediate = mapValue(input.maps["seed-to-soil map:"])(x);
-      intermediate = mapValue(input.maps["soil-to-fertilizer map:"])(intermediate);
-      intermediate = mapValue(input.maps["fertilizer-to-water map:"])(intermediate);
-      intermediate = mapValue(input.maps["water-to-light map:"])(intermediate);
-      intermediate = mapValue(input.maps["light-to-temperature map:"])(intermediate);
-      intermediate = mapValue(input.maps["temperature-to-humidity map:"])(intermediate);
-      intermediate = mapValue(input.maps["humidity-to-location map:"])(intermediate);
+      let intermediate = mapValue(x, input.maps["seed-to-soil map:"]);
+      intermediate = mapValue(intermediate, input.maps["soil-to-fertilizer map:"]);
+      intermediate = mapValue(intermediate, input.maps["fertilizer-to-water map:"]);
+      intermediate = mapValue(intermediate, input.maps["water-to-light map:"]);
+      intermediate = mapValue(intermediate, input.maps["light-to-temperature map:"]);
+      intermediate = mapValue(intermediate, input.maps["temperature-to-humidity map:"]);
+      intermediate = mapValue(intermediate, input.maps["humidity-to-location map:"]);
       result = Math.min(result, intermediate);
-      // result = Math.min(
-      //   result,
-      //   ...[x]
-      //     .map(mapValue(input.maps["seed-to-soil map:"]))
-      //     .map(mapValue(input.maps["soil-to-fertilizer map:"]))
-      //     .map(mapValue(input.maps["fertilizer-to-water map:"]))
-      //     .map(mapValue(input.maps["water-to-light map:"]))
-      //     .map(mapValue(input.maps["light-to-temperature map:"]))
-      //     .map(mapValue(input.maps["temperature-to-humidity map:"]))
-      //     .map(mapValue(input.maps["humidity-to-location map:"]))
-      // );
     }
   }
   return result;
 };
 
-function mapValue(mapping) {
-  return (seed) => {
-    for (const map of mapping) {
-      if (seed >= map.sourceStart && seed < map.sourceStart + map.length) {
-        return seed - map.sourceStart + map.destStart;
-      }
+function mapValue(seed, mapping) {
+  for (const map of mapping) {
+    if (seed >= map.sourceStart && seed < map.sourceStart + map.length) {
+      return seed - map.sourceStart + map.destStart;
     }
-    return seed;
-  };
+  }
+  return seed;
 }
 
 export default solution;
