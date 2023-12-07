@@ -5,30 +5,30 @@ const solution = {
 };
 
 const cardValueMap = {
-  2: 2,
-  3: 3,
-  4: 4,
-  5: 5,
-  6: 6,
-  7: 7,
-  8: 8,
-  9: 9,
-  T: 10,
-  "2J": 1,
-  "3J": 1,
-  "4J": 1,
-  "5J": 1,
-  "6J": 1,
-  "7J": 1,
-  "8J": 1,
-  "9J": 1,
-  TJ: 1,
-  QJ: 1,
-  KJ: 1,
-  AJ: 1,
-  Q: 11,
-  K: 12,
-  A: 13,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+  6: 5,
+  7: 6,
+  8: 7,
+  9: 8,
+  T: 9,
+  "2J": 0,
+  "3J": 0,
+  "4J": 0,
+  "5J": 0,
+  "6J": 0,
+  "7J": 0,
+  "8J": 0,
+  "9J": 0,
+  TJ: 0,
+  QJ: 0,
+  KJ: 0,
+  AJ: 0,
+  Q: 10,
+  K: 11,
+  A: 12,
 };
 
 const parseInput = (input) => {
@@ -81,24 +81,24 @@ const calculateHandValue = (hand) => {
   }
   const cardCounts = Object.values(cardMap);
   if (cardCounts.length === 1) {
-    handValue += 7 * 13 ** 12;
+    handValue += 6 * 13 ** 5;
   } else if (cardCounts.length === 2 && cardCounts.includes(4)) {
-    handValue += 6 * 13 ** 12;
+    handValue += 5 * 13 ** 5;
   } else if (cardCounts.length === 2 && cardCounts.includes(3)) {
-    handValue += 5 * 13 ** 12;
+    handValue += 4 * 13 ** 5;
   } else if (cardCounts.length === 3 && cardCounts.includes(3)) {
-    handValue += 4 * 13 ** 12;
+    handValue += 3 * 13 ** 5;
   } else if (cardCounts.length === 3 && cardCounts.includes(2)) {
-    handValue += 3 * 13 ** 12;
+    handValue += 2 * 13 ** 5;
   } else if (cardCounts.length === 4 && cardCounts.includes(2)) {
-    handValue += 2 * 13 ** 12;
+    handValue += 1 * 13 ** 5;
   } else {
-    handValue += 1 * 13 ** 12;
+    handValue += 0 * 13 ** 5;
   }
 
-  let cardCounter = 5;
+  let cardCounter = 4;
   for (const cardValue of hand) {
-    handValue += cardValueMap[cardValue] * 13 ** (cardCounter * 2);
+    handValue += cardValueMap[cardValue] * 13 ** cardCounter;
     cardCounter--;
   }
 
