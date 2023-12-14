@@ -37,7 +37,6 @@ const evaluate = (card, input, memo) => {
   let total = 1;
   const winning = card.numbers.filter((num) => card.winners.includes(num)).length;
   for (let x = 1; x <= winning; x++) {
-    if (x >= input.length) console.log("fuck");
     total += evaluate(input[+card.id + x], input, memo);
   }
   memo[card.id] = total;
